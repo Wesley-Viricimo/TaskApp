@@ -8,6 +8,10 @@ import retrofit2.http.POST
 
 interface PersonService {
 
+    /*{
+
+}*/
+
     @POST("Authentication/Login")
     @FormUrlEncoded //Informa que as informações que serão enviadas através do método POST estão no body
     fun login(@Field("email") email: String, @Field("password") password: String) : Call<PersonModel> //@Field diz o nome do campo da API que receberá a informação enviada
