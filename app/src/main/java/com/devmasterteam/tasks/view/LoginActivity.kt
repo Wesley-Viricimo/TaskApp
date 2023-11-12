@@ -1,11 +1,16 @@
 package com.devmasterteam.tasks.view
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.devmasterteam.tasks.R
 import com.devmasterteam.tasks.databinding.ActivityLoginBinding
+import com.devmasterteam.tasks.service.model.PersonModel
+import com.devmasterteam.tasks.service.model.ValidationModel
 import com.devmasterteam.tasks.viewmodel.LoginViewModel
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
@@ -38,6 +43,17 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun observe() {
+        viewModel.login.observe(this, object : Observer<ValidationModel> {
+            override fun onChanged(t: ValidationModel?) {
+                startActivity(Intent(applicationContext, MainActivity::class.java))
+            }
+        })
+
+        viewModel.login.observe(this, object : Observer<ValidationModel> {
+            override fun onChanged(t: ValidationModel?) {
+                Toast.makeText(applicationContext, t.toString(), Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun handleLogin() {
