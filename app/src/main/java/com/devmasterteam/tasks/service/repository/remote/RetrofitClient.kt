@@ -28,7 +28,7 @@ class RetrofitClient private constructor() {
             return INSTANCE
         }
 
-        fun <T> getService(serviceClass: Class<T>) : T {
+        fun <T> getService(serviceClass: Class<T>) : T {//Como vários serviços precisarão utilizar a retrofit client será utilizado generics para receber qualquer classe de serviço
             return getRetrofitInstance().create(serviceClass)
         }
     }
