@@ -43,17 +43,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun observe() {
-        viewModel.login.observe(this, object : Observer<ValidationModel> {
-            override fun onChanged(t: ValidationModel?) {
+        viewModel.login.observe(this) {
+            if (it.status()) {
                 startActivity(Intent(applicationContext, MainActivity::class.java))
+                finish()
+            } else {
+                Toast.makeText(applicationContext, it.message(), Toast.LENGTH_SHORT).show()
             }
-        })
-
-        viewModel.login.observe(this, object : Observer<ValidationModel> {
-            override fun onChanged(t: ValidationModel?) {
-                Toast.makeText(applicationContext, t.toString(), Toast.LENGTH_SHORT).show()
-            }
-        })
+        }
     }
 
     private fun handleLogin() {
