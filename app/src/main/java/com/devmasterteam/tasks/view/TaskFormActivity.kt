@@ -3,6 +3,7 @@ package com.devmasterteam.tasks.view
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.DatePicker
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -29,6 +30,10 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
         binding.buttonSave.setOnClickListener(this)
         binding.buttonDate.setOnClickListener(this)
 
+        viewModel.loadPriorities()
+
+        observe()
+
         // Layout
         setContentView(binding.root)
     }
@@ -39,19 +44,30 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
         }
     }
 
-    private fun handleDate() {
-        val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        DatePickerDialog(this, this, year, month, day).show()
-    }
-
     override fun onDateSet(v: DatePicker, year: Int, month: Int, dayOfMonth: Int) {
         val calendar = Calendar.getInstance()
         calendar.set(year, month, dayOfMonth)
 
         val dueDate = dateFormat.format(calendar.time)
         binding.buttonDate.text = dueDate
+    }
+
+    private fun observe() {
+        viewModel.priorityList.observe(this) {
+            val list = mutableListOf<String>()
+            for(p in it) { //For percorre em todos os elementos da lista
+                list.add(p.description)
+            }
+            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, list)
+            binding.spinnerPriority.adapter = adapter
+        }
+    }
+
+    private fun handleDate() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        DatePickerDialog(this, this, year, month, day).show()
     }
 }
