@@ -13,7 +13,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class TaskRepository(val context: Context) : BaseRepository() {
-    val remote = RetrofitClient.getService(TaskService::class.java)
+    private val remote = RetrofitClient.getService(TaskService::class.java)
 
     fun create(task : TaskModel, listener : APIListener<Boolean>) {
         val call = remote.create(task.priorityId, task.description, task.dueDate, task.complete)

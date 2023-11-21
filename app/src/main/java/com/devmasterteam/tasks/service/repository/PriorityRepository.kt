@@ -15,7 +15,7 @@ import retrofit2.Response
 
 class PriorityRepository(val context : Context) : BaseRepository() {
 
-    val remote = RetrofitClient.getService(PriorityService::class.java)
+    private val remote = RetrofitClient.getService(PriorityService::class.java)
     private val database = TaskDatabase.getDatabase(context).priorityDAO()
 
     fun list(listener: APIListener<List<PriorityModel>>) {

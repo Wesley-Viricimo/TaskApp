@@ -7,7 +7,7 @@ import retrofit2.Response
 
 open class BaseRepository {
 
-    fun failResponse(str: String) : String {
+    private fun failResponse(str: String) : String {
         return Gson().fromJson(str, String::class.java) //Converte o JSON em string e retorna o mesmo
     }
 
