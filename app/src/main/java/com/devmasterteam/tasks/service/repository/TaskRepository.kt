@@ -12,18 +12,14 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class TaskRepository(val context: Context) {
+class TaskRepository(val context: Context) : BaseRepository() {
     val remote = RetrofitClient.getService(TaskService::class.java)
 
     fun create(task : TaskModel, listener : APIListener<Boolean>) {
         val call = remote.create(task.priorityId, task.description, task.dueDate, task.complete)
         call.enqueue(object : Callback<Boolean> {
             override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
-                if(response.code() == TaskConstants.HTTP.SUCCESS) { //Se a resposta for um código 200 significa que deu certo
-                    response.body()?.let { listener.onSuccess(it) }   //Passa o corpo da requisição para o método listener.onSucess
-                } else {
-                    listener.onFailure(failResponse(response.errorBody()!!.string()))
-                }
+                handleResponse(response, listener)
             }
 
             override fun onFailure(call: Call<Boolean>, t: Throwable) {
@@ -32,9 +28,5 @@ class TaskRepository(val context: Context) {
 
         })
 
-    }
-
-    private fun failResponse(str: String) : String {
-        return Gson().fromJson(str, String::class.java) //Converte o JSON em string e retorna o mesmo
     }
 }
