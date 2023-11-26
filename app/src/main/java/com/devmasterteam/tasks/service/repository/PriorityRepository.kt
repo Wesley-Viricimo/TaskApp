@@ -18,6 +18,16 @@ class PriorityRepository(val context : Context) : BaseRepository() {
     private val remote = RetrofitClient.getService(PriorityService::class.java)
     private val database = TaskDatabase.getDatabase(context).priorityDAO()
 
+    companion object {
+        private val cache = mutableMapOf<Int, String>()
+        fun getDescription(id : Int) : String {
+            return cache[id] ?: ""
+        }
+        fun setDescription(id: Int, str: String) {
+            cache[id] = str
+        }
+    }
+
     fun list(listener: APIListener<List<PriorityModel>>) {
         val call = remote.list()
         call.enqueue(object : Callback<List<PriorityModel>> {
@@ -34,6 +44,22 @@ class PriorityRepository(val context : Context) : BaseRepository() {
 
     fun list() : List<PriorityModel> {
         return database.list()
+    }
+
+    fun getDescription(id : Int) : String {
+        val cached = PriorityRepository.getDescription(id)
+        return if(cached == "") {
+            if(PriorityRepository.getDescription(id) == "") {
+                val description = database.getDescription(id)
+                setDescription(id, description)
+                description
+            } else {
+                PriorityRepository.getDescription(id)
+            }
+        } else {
+            cached
+        }
+
     }
 
     fun save(list : List<PriorityModel>) {
