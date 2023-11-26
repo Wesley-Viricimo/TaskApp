@@ -35,6 +35,11 @@ class TaskRepository(context: Context) : BaseRepository(context) {
         executeCall(call, listener)
     }
 
+    fun load(id: Int, listener: APIListener<TaskModel>) {
+        val call = remote.load(id)
+        executeCall(call, listener)
+    }
+
     fun delete(id: Int, listener: APIListener<Boolean>) {
         val call = remote.delete(id)
         executeCall(call, listener)
