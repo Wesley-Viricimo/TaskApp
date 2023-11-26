@@ -1,6 +1,9 @@
 package com.devmasterteam.tasks.service.repository
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import com.devmasterteam.tasks.R
 import com.devmasterteam.tasks.service.constants.TaskConstants
 import com.devmasterteam.tasks.service.listener.APIListener
@@ -30,4 +33,29 @@ open class BaseRepository(val context : Context) {
             }
         })
     }
+
+    fun isConnectionAvailable() : Boolean {
+        var result = false
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { //Se a API do aparelho for igual ou superior a 23
+            val activeNet = cm.activeNetwork ?: return false //Verifica se existe uma rede ativa
+            val netWorkCapabilities = cm.getNetworkCapabilities(activeNet) ?: return false //Verifica funcionalidades disponíveis na rede
+            result = when {
+                netWorkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true //Verifica se o aparelho está conectado ao wifi, se sim retorna verdadeiro
+                netWorkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true //Verifica se o aparelho está conectado aos dados móveis, se sim retorna verdadeiro
+                else -> false
+            }
+        } else {
+            if(cm.activeNetworkInfo != null) {
+                result = when (cm.activeNetworkInfo!!.type) {
+                    ConnectivityManager.TYPE_WIFI -> true
+                    ConnectivityManager.TYPE_MOBILE -> true
+                    ConnectivityManager.TYPE_ETHERNET -> true
+                    else -> false
+                }
+            }
+        }
+        return result
+    }
+
 }
