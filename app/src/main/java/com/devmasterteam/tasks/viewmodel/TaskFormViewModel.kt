@@ -33,16 +33,21 @@ class TaskFormViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun save(task: TaskModel) {
-        taskRepository.create(task, object : APIListener<Boolean> {
+
+        val listener =  object : APIListener<Boolean> {
             override fun onSuccess(result: Boolean) {
-               _taskSave.value = ValidationModel()
+                _taskSave.value = ValidationModel()
             }
 
             override fun onFailure(message: String) {
                 _taskSave.value = ValidationModel(message)
             }
-
-        })
+        }
+        if(task.id == 0) {
+            taskRepository.create(task, listener)
+        } else {
+            taskRepository.update(task, listener)
+        }
     }
 
     fun load(id: Int) {
