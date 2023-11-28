@@ -19,7 +19,7 @@ class BiometricHelper {
                 BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE-> return false
                 BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> return false
             }
-            
+
             return false
         }
     }
